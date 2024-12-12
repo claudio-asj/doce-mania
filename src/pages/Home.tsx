@@ -1,6 +1,19 @@
 import { BadgePercent, Cake, CakeSlice, Coffee, Cookie, Croissant, CupSoda } from "lucide-react";
+import { useState } from "react";
 
 export function Home() {
+
+    const [categorySelected, setCategorySelected] = useState('promocao')
+    function changeCategorySelected(newCategory:string){
+        setCategorySelected(newCategory);
+    }
+    function thisCategoryIsSelected(status:boolean){
+        if(status){
+            return 'bg-rose-500 hover:bg-rose-700 p-6 rounded-full'
+        } else {
+            return 'bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full'
+        }
+    }
     return (
         <div className="bg-branco text-preto">
             <main className="bg-rosaEscuro flex justify-center items-center min-h-[40vh] p-4 py-8 rounded-b-3xl shadow-lg">
@@ -8,28 +21,30 @@ export function Home() {
             </main>
             <section className="max-w-5xl mx-auto mt-16 px-4">
                 <div className="flex items-center justify-between gap-4 max-w-full overflow-x-scroll pb-4">
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('promo')}} className={thisCategoryIsSelected(categorySelected=='promo')}>
                         <BadgePercent size={32} color="#fefefe" />
                     </button>
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('biscoitos')}} className={thisCategoryIsSelected(categorySelected=='biscoitos')}>
                         <Cookie size={32} color="#fefefe" />
                     </button>
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('bolos')}} className={thisCategoryIsSelected(categorySelected=='bolos')}>
                         <Cake size={32} color="#fefefe" />
                     </button>
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('tortas')}} className={thisCategoryIsSelected(categorySelected=='tortas')}>
                         <CakeSlice size={32} color="#fefefe" />
                     </button>
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('salgados')}} className={thisCategoryIsSelected(categorySelected=='salgados')}>
                         <Croissant size={32} color="#fefefe" />
                     </button>
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('bebidasQuentes')}} className={thisCategoryIsSelected(categorySelected=='bebidasQuentes')}>
                         <Coffee size={32} color="#fefefe" />
                     </button>
-                    <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
+                    <button onClick={()=>{changeCategorySelected('bebidasGeladas')}} className={thisCategoryIsSelected(categorySelected=='bebidasGeladas')}>
                         <CupSoda size={32} color="#fefefe" />
                     </button>
                 </div>
+
+                <h2 className="mt-16 text-2xl font-bold text-marrom">Titulo Categoria</h2>
             </section>
 
             <footer className="bg-rosaEscuro text-branco py-6 mt-32">
