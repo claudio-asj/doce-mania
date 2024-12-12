@@ -6,8 +6,8 @@ export function Home() {
             <main className="bg-rosaEscuro flex justify-center items-center min-h-[40vh] p-4 py-8 rounded-b-3xl shadow-lg">
                 <img src="/logovertical.svg" alt="" className="h-64" />
             </main>
-            <section className="max-w-5xl mx-auto mt-16">
-                <div className="flex items-center justify-between">
+            <section className="max-w-5xl mx-auto mt-16 px-4">
+                <div className="flex items-center justify-between gap-4 max-w-full overflow-x-scroll pb-4">
                     <button className="bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full">
                         <BadgePercent size={32} color="#fefefe" />
                     </button>
