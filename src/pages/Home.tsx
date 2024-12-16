@@ -1,8 +1,19 @@
 import { BadgePercent, Cake, CakeSlice, Coffee, Cookie, Croissant, CupSoda } from "lucide-react";
-import { useState } from "react";
-import { bebidasGeladas, bebidasQuentes, biscoitos, bolos, promo, salgados, tortas } from "../utils/produtos";
+import { useEffect, useState } from "react";
+import { getProducts } from "../utils/getProducts";
 
 export function Home() {
+
+    const [products, setProducts] = useState<string[][]>([]); // Estado para armazenar os dados
+    // Chama a API quando a página carrega
+    useEffect(() => {
+        async function fetchData() {
+            const data = await getProducts();
+            setProducts(data); // Salva os dados no estado
+        }
+
+        fetchData();
+    }, []);
 
     const [categorySelected, setCategorySelected] = useState('promo')
     function changeCategorySelected(newCategory: string) {
@@ -35,32 +46,8 @@ export function Home() {
         }
     }
 
-
-
     const categoryTitle = getProductsByCategory(categorySelected)
 
-    const setProducts = (category: string) => {
-        switch (category) {
-            case 'promo':
-                return promo
-            case 'biscoitos':
-                return biscoitos
-            case 'bolos':
-                return bolos
-            case 'tortas':
-                return tortas
-            case 'salgados':
-                return salgados
-            case 'bebidasQuentes':
-                return bebidasQuentes
-            case 'bebidasGeladas':
-                return bebidasGeladas
-            default:
-                return []
-        }
-    }
-
-    const productList = setProducts(categorySelected)
     return (
         <div className="bg-branco text-preto">
             <main className="bg-rosaEscuro flex justify-center items-center min-h-[40vh] p-4 py-8 rounded-b-3xl shadow-lg">
@@ -92,20 +79,37 @@ export function Home() {
                 </div>
 
                 <h2 className="mt-16 text-2xl font-bold text-azulEscuro">{categoryTitle}</h2>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 mt-4 gap-4">
-                    {
-                        productList.map(product => {
-                            return (<div className="bg-branco shadow-lg overflow-hidden rounded-lg">
-                                <img src={product.imgLink} alt="" />
-                                <div className="p-2">
-                                    <h3 className="font-bold text-marrom">{product.name}</h3>
-                                    <h4 className="text-sm">R$ {product.price}</h4>
-                                </div>
-                            </div>)
-                        })
-                    }
-                </div>
+                {
+                    products.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6  mt-4 gap-4">
+                            {products.length > 0 ? (
+                                products.map((product, index) => (
+                                    <div
+                                        key={index}
+                                        className="border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52"
+                                    >
+                                        {/* Imagem do Produto */}
+                                        <img
+                                            src={product[4] || "https://via.placeholder.com/150"} // Ajuste o índice conforme a API
+                                            alt={product[1]}
+                                            className="w-full h-32"
+                                        />
+                                        <div className="p-2">
+                                            {/* Nome do Produto */}
+                                            <h3 className="font-bold text-marrom">{product[0]}</h3>
+                                            {/* Preço */}
+                                            <p className="text-sm">
+                                                {product[2]}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Carregando dados...</p>
+                            )}
+                        </div>
+                    ) : (<span>erro</span>)
+                }
             </section>
 
 
