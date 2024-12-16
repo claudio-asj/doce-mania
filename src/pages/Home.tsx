@@ -1,19 +1,66 @@
 import { BadgePercent, Cake, CakeSlice, Coffee, Cookie, Croissant, CupSoda } from "lucide-react";
 import { useState } from "react";
+import { bebidasGeladas, bebidasQuentes, biscoitos, bolos, promo, salgados, tortas } from "../utils/produtos";
 
 export function Home() {
 
-    const [categorySelected, setCategorySelected] = useState('promocao')
-    function changeCategorySelected(newCategory:string){
+    const [categorySelected, setCategorySelected] = useState('promo')
+    function changeCategorySelected(newCategory: string) {
         setCategorySelected(newCategory);
     }
-    function thisCategoryIsSelected(status:boolean){
-        if(status){
+    function thisCategoryIsSelected(status: boolean) {
+        if (status) {
             return 'bg-rose-500 hover:bg-rose-700 p-6 rounded-full'
         } else {
             return 'bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full'
         }
     }
+
+    const getProductsByCategory = (category: string) => {
+        switch (category) {
+            case 'promo':
+                return 'Promoções'
+            case 'biscoitos':
+                return 'Biscoitos'
+            case 'bolos':
+                return 'Bolos'
+            case 'tortas':
+                return 'Tortas'
+            case 'doces':
+                return 'Doces'
+            case 'bebidas':
+                return 'Bebidas'
+            default:
+                return ''
+        }
+    }
+
+
+
+    const categoryTitle = getProductsByCategory(categorySelected)
+
+    const setProducts = (category: string) => {
+        switch (category) {
+            case 'promo':
+                return promo
+            case 'biscoitos':
+                return biscoitos
+            case 'bolos':
+                return bolos
+            case 'tortas':
+                return tortas
+            case 'salgados':
+                return salgados
+            case 'bebidasQuentes':
+                return bebidasQuentes
+            case 'bebidasGeladas':
+                return bebidasGeladas
+            default:
+                return []
+        }
+    }
+
+    const productList = setProducts(categorySelected)
     return (
         <div className="bg-branco text-preto">
             <main className="bg-rosaEscuro flex justify-center items-center min-h-[40vh] p-4 py-8 rounded-b-3xl shadow-lg">
@@ -21,31 +68,46 @@ export function Home() {
             </main>
             <section className="max-w-5xl mx-auto mt-16 px-4">
                 <div className="flex items-center justify-between gap-4 max-w-full overflow-x-scroll pb-4">
-                    <button onClick={()=>{changeCategorySelected('promo')}} className={thisCategoryIsSelected(categorySelected=='promo')}>
+                    <button onClick={() => { changeCategorySelected('promo') }} className={thisCategoryIsSelected(categorySelected == 'promo')}>
                         <BadgePercent size={32} color="#fefefe" />
                     </button>
-                    <button onClick={()=>{changeCategorySelected('biscoitos')}} className={thisCategoryIsSelected(categorySelected=='biscoitos')}>
+                    <button onClick={() => { changeCategorySelected('biscoitos') }} className={thisCategoryIsSelected(categorySelected == 'biscoitos')}>
                         <Cookie size={32} color="#fefefe" />
                     </button>
-                    <button onClick={()=>{changeCategorySelected('bolos')}} className={thisCategoryIsSelected(categorySelected=='bolos')}>
+                    <button onClick={() => { changeCategorySelected('bolos') }} className={thisCategoryIsSelected(categorySelected == 'bolos')}>
                         <Cake size={32} color="#fefefe" />
                     </button>
-                    <button onClick={()=>{changeCategorySelected('tortas')}} className={thisCategoryIsSelected(categorySelected=='tortas')}>
+                    <button onClick={() => { changeCategorySelected('tortas') }} className={thisCategoryIsSelected(categorySelected == 'tortas')}>
                         <CakeSlice size={32} color="#fefefe" />
                     </button>
-                    <button onClick={()=>{changeCategorySelected('salgados')}} className={thisCategoryIsSelected(categorySelected=='salgados')}>
+                    <button onClick={() => { changeCategorySelected('salgados') }} className={thisCategoryIsSelected(categorySelected == 'salgados')}>
                         <Croissant size={32} color="#fefefe" />
                     </button>
-                    <button onClick={()=>{changeCategorySelected('bebidasQuentes')}} className={thisCategoryIsSelected(categorySelected=='bebidasQuentes')}>
+                    <button onClick={() => { changeCategorySelected('bebidasQuentes') }} className={thisCategoryIsSelected(categorySelected == 'bebidasQuentes')}>
                         <Coffee size={32} color="#fefefe" />
                     </button>
-                    <button onClick={()=>{changeCategorySelected('bebidasGeladas')}} className={thisCategoryIsSelected(categorySelected=='bebidasGeladas')}>
+                    <button onClick={() => { changeCategorySelected('bebidasGeladas') }} className={thisCategoryIsSelected(categorySelected == 'bebidasGeladas')}>
                         <CupSoda size={32} color="#fefefe" />
                     </button>
                 </div>
 
-                <h2 className="mt-16 text-2xl font-bold text-marrom">Titulo Categoria</h2>
+                <h2 className="mt-16 text-2xl font-bold text-azulEscuro">{categoryTitle}</h2>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 mt-4 gap-4">
+                    {
+                        productList.map(product => {
+                            return (<div className="bg-branco shadow-lg overflow-hidden rounded-lg">
+                                <img src={product.imgLink} alt="" />
+                                <div className="p-2">
+                                    <h3 className="font-bold text-marrom">{product.name}</h3>
+                                    <h4 className="text-sm">R$ {product.price}</h4>
+                                </div>
+                            </div>)
+                        })
+                    }
+                </div>
             </section>
+
 
             <footer className="bg-rosaEscuro text-branco py-6 mt-32">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
