@@ -15,7 +15,7 @@ export function Home() {
         fetchData();
     }, []);
 
-    const [categorySelected, setCategorySelected] = useState('')
+    const [categorySelected, setCategorySelected] = useState('Bolo')
     function changeCategorySelected(newCategory: string) {
         setCategorySelected(newCategory);
     }

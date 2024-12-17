@@ -10,7 +10,7 @@ export async function getProducts() {
     // Extraindo apenas os 'values' do objeto retornado
     const dataValues = response.data.values;
 
-    console.log(dataValues); // Exibe os valores no console
+    //console.log(dataValues); // Exibe os valores no console
     return dataValues;       // Retorna os valores
   } catch (error) {
     console.error('Erro ao buscar dados:', error);
