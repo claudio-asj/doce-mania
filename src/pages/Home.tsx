@@ -1,4 +1,4 @@
-import { BadgePercent, Cake, CakeSlice, Coffee, Cookie, Croissant, CupSoda } from "lucide-react";
+import {  Cake, CakeSlice, Croissant, CupSoda, IceCream,  PartyPopper } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getProducts } from "../utils/getProducts";
 
@@ -15,7 +15,7 @@ export function Home() {
         fetchData();
     }, []);
 
-    const [categorySelected, setCategorySelected] = useState('promo')
+    const [categorySelected, setCategorySelected] = useState('')
     function changeCategorySelected(newCategory: string) {
         setCategorySelected(newCategory);
     }
@@ -29,18 +29,20 @@ export function Home() {
 
     const getProductsByCategory = (category: string) => {
         switch (category) {
-            case 'promo':
+            case '':
                 return 'Promoções'
-            case 'biscoitos':
-                return 'Biscoitos'
-            case 'bolos':
-                return 'Bolos'
-            case 'tortas':
-                return 'Tortas'
-            case 'doces':
-                return 'Doces'
-            case 'bebidas':
-                return 'Bebidas'
+            case 'Bolo':
+                return 'Bolo'
+            case 'Sorvete':
+                return 'Sorvete'
+            case 'Salgado':
+                return 'Salgado'
+            case 'Bebida':
+                return 'Bebida'
+            case 'Doce':
+                return 'Doce'
+            case 'Kit festa':
+                return 'Kit festa'
             default:
                 return ''
         }
@@ -55,27 +57,30 @@ export function Home() {
             </main>
             <section className="max-w-5xl mx-auto mt-16 px-4">
                 <div className="flex items-center justify-between gap-4 max-w-full overflow-x-scroll pb-4">
-                    <button onClick={() => { changeCategorySelected('promo') }} className={thisCategoryIsSelected(categorySelected == 'promo')}>
+                    {/* <button onClick={() => { changeCategorySelected('') }} className={thisCategoryIsSelected(categorySelected == '')}>
                         <BadgePercent size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('biscoitos') }} className={thisCategoryIsSelected(categorySelected == 'biscoitos')}>
-                        <Cookie size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('bolos') }} className={thisCategoryIsSelected(categorySelected == 'bolos')}>
+                    </button> */}
+                    <button onClick={() => { changeCategorySelected('Bolo') }} className={thisCategoryIsSelected(categorySelected == 'Bolo')}>
                         <Cake size={32} color="#fefefe" />
                     </button>
-                    <button onClick={() => { changeCategorySelected('tortas') }} className={thisCategoryIsSelected(categorySelected == 'tortas')}>
-                        <CakeSlice size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('salgados') }} className={thisCategoryIsSelected(categorySelected == 'salgados')}>
+                    <button onClick={() => { changeCategorySelected('Salgado') }} className={thisCategoryIsSelected(categorySelected == 'Salgado')}>
                         <Croissant size={32} color="#fefefe" />
                     </button>
-                    <button onClick={() => { changeCategorySelected('bebidasQuentes') }} className={thisCategoryIsSelected(categorySelected == 'bebidasQuentes')}>
-                        <Coffee size={32} color="#fefefe" />
+                    <button onClick={() => { changeCategorySelected('Sorvete') }} className={thisCategoryIsSelected(categorySelected == 'Sorvete')}>
+                        <IceCream size={32} color="#fefefe" />
                     </button>
-                    <button onClick={() => { changeCategorySelected('bebidasGeladas') }} className={thisCategoryIsSelected(categorySelected == 'bebidasGeladas')}>
+                    <button onClick={() => { changeCategorySelected('Bebida') }} className={thisCategoryIsSelected(categorySelected == 'Bebida')}>
                         <CupSoda size={32} color="#fefefe" />
                     </button>
+                    <button onClick={() => { changeCategorySelected('Doce') }} className={thisCategoryIsSelected(categorySelected == 'Doce')}>
+                        <CakeSlice size={32} color="#fefefe" />
+                    </button>
+                    <button onClick={() => { changeCategorySelected('Kit festa') }} className={thisCategoryIsSelected(categorySelected == 'Kit festa')}>
+                        <PartyPopper size={32} color="#fefefe" />
+                    </button>
+                    {/* <button onClick={() => { changeCategorySelected('bebidasQuentes') }} className={thisCategoryIsSelected(categorySelected == 'bebidasQuentes')}>
+                        <Coffee size={32} color="#fefefe" />
+                    </button> */}
                 </div>
 
                 <h2 className="mt-16 text-2xl font-bold text-azulEscuro">{categoryTitle}</h2>
@@ -84,25 +89,28 @@ export function Home() {
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6  mt-4 gap-4">
                             {products.length > 0 ? (
                                 products.map((product, index) => (
-                                    <div
-                                        key={index}
-                                        className="border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52"
-                                    >
-                                        {/* Imagem do Produto */}
-                                        <img
-                                            src={product[4] || "https://via.placeholder.com/150"} // Ajuste o índice conforme a API
-                                            alt={product[1]}
-                                            className="w-full h-32"
-                                        />
-                                        <div className="p-2">
-                                            {/* Nome do Produto */}
-                                            <h3 className="font-bold text-marrom">{product[0]}</h3>
-                                            {/* Preço */}
-                                            <p className="text-sm">
-                                                {product[2]}
-                                            </p>
+                                    (product[1] == categorySelected) ? (
+                                        <div
+                                            key={index}
+                                            className="border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52"
+                                        >
+                                            {/* Imagem do Produto */}
+                                            <img
+                                                src={product[4] || "https://via.placeholder.com/150"} // Ajuste o índice conforme a API
+                                                alt={product[1]}
+                                                className="w-full h-32"
+                                            />
+                                            <div className="p-2">
+                                                {/* Nome do Produto */}
+                                                <h3 className="font-bold text-marrom">{product[0]}</h3>
+                                                {/* Preço */}
+                                                <p className="text-sm">
+                                                    {product[2]}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
+                                    ) : (<h1 className="hidden">oi</h1>)
+
                                 ))
                             ) : (
                                 <p>Carregando dados...</p>
