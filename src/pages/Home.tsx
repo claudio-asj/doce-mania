@@ -1,6 +1,7 @@
-import {  Cake, CakeSlice, Croissant, CupSoda, IceCream,  PartyPopper } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Cake, CakeSlice, Croissant, CupSoda, IceCream, PartyPopper } from "lucide-react";
+import React, { ElementType, useEffect, useState } from "react";
 import { getProducts } from "../utils/getProducts";
+import { Product } from "../components/Product";
 
 export function Home() {
 
@@ -18,13 +19,6 @@ export function Home() {
     const [categorySelected, setCategorySelected] = useState('Bolo')
     function changeCategorySelected(newCategory: string) {
         setCategorySelected(newCategory);
-    }
-    function thisCategoryIsSelected(status: boolean) {
-        if (status) {
-            return 'bg-rose-500 hover:bg-rose-700 p-6 rounded-full'
-        } else {
-            return 'bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full'
-        }
     }
 
     const getProductsByCategory = (category: string) => {
@@ -57,30 +51,14 @@ export function Home() {
             </main>
             <section className="max-w-5xl mx-auto mt-16 px-4">
                 <div className="flex items-center justify-between gap-4 max-w-full overflow-x-scroll pb-4">
-                    {/* <button onClick={() => { changeCategorySelected('') }} className={thisCategoryIsSelected(categorySelected == '')}>
-                        <BadgePercent size={32} color="#fefefe" />
-                    </button> */}
-                    <button onClick={() => { changeCategorySelected('Bolo') }} className={thisCategoryIsSelected(categorySelected == 'Bolo')}>
-                        <Cake size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('Salgado') }} className={thisCategoryIsSelected(categorySelected == 'Salgado')}>
-                        <Croissant size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('Sorvete') }} className={thisCategoryIsSelected(categorySelected == 'Sorvete')}>
-                        <IceCream size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('Bebida') }} className={thisCategoryIsSelected(categorySelected == 'Bebida')}>
-                        <CupSoda size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('Doce') }} className={thisCategoryIsSelected(categorySelected == 'Doce')}>
-                        <CakeSlice size={32} color="#fefefe" />
-                    </button>
-                    <button onClick={() => { changeCategorySelected('Kit festa') }} className={thisCategoryIsSelected(categorySelected == 'Kit festa')}>
-                        <PartyPopper size={32} color="#fefefe" />
-                    </button>
-                    {/* <button onClick={() => { changeCategorySelected('bebidasQuentes') }} className={thisCategoryIsSelected(categorySelected == 'bebidasQuentes')}>
-                        <Coffee size={32} color="#fefefe" />
-                    </button> */}
+
+                    <CategoryBtn title="Bolo" Icon={Cake} isSelected={categorySelected == 'Bolo'} onClick={() => { changeCategorySelected('Bolo') }} />
+                    <CategoryBtn title="Salgado" Icon={Croissant} isSelected={categorySelected == 'Salgado'} onClick={() => { changeCategorySelected('Salgado') }} />
+                    <CategoryBtn title="Sorvete" Icon={IceCream} isSelected={categorySelected == 'Sorvete'} onClick={() => { changeCategorySelected('Sorvete') }} />
+                    <CategoryBtn title="Bebida" Icon={CupSoda} isSelected={categorySelected == 'Bebida'} onClick={() => { changeCategorySelected('Bebida') }} />
+                    <CategoryBtn title="Doce" Icon={CakeSlice} isSelected={categorySelected == 'Doce'} onClick={() => { changeCategorySelected('Doce') }} />
+                    <CategoryBtn title="Kit festa" Icon={PartyPopper} isSelected={categorySelected == 'Kit festa'} onClick={() => { changeCategorySelected('Kit festa') }} />
+
                 </div>
 
                 <h2 className="mt-16 text-2xl font-bold text-azulEscuro">{categoryTitle}</h2>
@@ -90,26 +68,14 @@ export function Home() {
                             {products.length > 0 ? (
                                 products.map((product, index) => (
                                     (product[1] == categorySelected) ? (
-                                        <div
+                                        <Product
                                             key={index}
-                                            className="border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52"
-                                        >
-                                            {/* Imagem do Produto */}
-                                            <img
-                                                src={product[4] || "https://via.placeholder.com/150"} // Ajuste o índice conforme a API
-                                                alt={product[1]}
-                                                className="w-full h-32"
-                                            />
-                                            <div className="p-2">
-                                                {/* Nome do Produto */}
-                                                <h3 className="font-bold text-marrom">{product[0]}</h3>
-                                                {/* Preço */}
-                                                <p className="text-sm">
-                                                    {product[2]}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ) : (<h1 className="hidden">oi</h1>)
+                                            name={product[0]}
+                                            price={product[2]}
+                                            img={product[4]}
+                                            description={product[3]}
+                                        />
+                                    ) : (<span className="hidden">Erro</span>)
 
                                 ))
                             ) : (
@@ -136,5 +102,29 @@ export function Home() {
                 </div>
             </footer>
         </div>
+    )
+}
+interface CategoryBtnProp {
+    title: string;
+    Icon: ElementType;
+    isSelected: boolean;
+    onClick: () => void;
+}
+function CategoryBtn({ title, Icon, isSelected, onClick }: CategoryBtnProp) {
+    function thisCategoryIsSelected(status: boolean) {
+        if (status) {
+            return 'bg-rose-500 hover:bg-rose-700 p-6 rounded-full'
+        } else {
+            return 'bg-rosaEscuro hover:bg-rosaClaro p-4 rounded-full'
+        }
+    }
+    return (
+        <button onClick={onClick}>
+            <div className={thisCategoryIsSelected(isSelected)}>
+                <Icon size={ isSelected ? 40 : 32} color="#fefefe" />
+            </div>
+
+            <span className="text-sm font-semibold text-rosaEscuro">{title}</span>
+        </button>
     )
 }
