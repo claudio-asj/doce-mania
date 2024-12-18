@@ -9,13 +9,13 @@ interface ProductProp {
 export function Product({name, img,price, description}:ProductProp) {
     return (
         <div
-            className="relative border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52 transform transition-transform duration-300 hover:scale-110"
+            className="relative cursor-pointer border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52 transform transition-transform duration-300 hover:scale-110"
         >
             {/* Imagem do Produto */}
             <img
                 src={img || "https://via.placeholder.com/150"} // Ajuste o índice conforme a API
                 alt={name}
-                className="w-full h-32"
+                className="w-full h-32 transform transition-transform duration-300 hover:scale-110"
             />
             <div className="p-2">
                 {/* Nome do Produto */}
