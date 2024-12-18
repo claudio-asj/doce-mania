@@ -7,7 +7,7 @@ interface ProductProp {
 export function Product({name, img,price, description}:ProductProp) {
     return (
         <div
-            className="border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52"
+            className="border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52 transform transition-transform duration-300 hover:scale-110"
         >
             {/* Imagem do Produto */}
             <img
