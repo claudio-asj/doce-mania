@@ -15,6 +15,15 @@ export default {
         preto: '#333333',
         branco: '#fefefe'
       },
+      animation: {
+        'grow-once': 'grow 1s ease-out forwards',
+      },
+      keyframes: {
+        grow: {
+          '0%': { transform: 'scale(0.5)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
     },
   },
   plugins: [],
