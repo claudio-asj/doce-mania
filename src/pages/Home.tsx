@@ -4,6 +4,7 @@ import { getProducts } from "../utils/getProducts";
 import { Product } from "../components/Product";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { MenuBtn } from "../components/menulateral/MenuBtn";
 
 export function Home() {
 
@@ -49,6 +50,7 @@ export function Home() {
     return (
         <div className="bg-branco text-preto">
             <Header />
+            <MenuBtn />
             <main className="max-w-5xl mx-auto mt-16 px-4">
                 <nav className="flex items-center justify-between gap-4 max-w-full overflow-x-scroll pb-4">
 
@@ -86,7 +88,7 @@ export function Home() {
                 }
             </main>
 
-            <Footer/>
+            <Footer />
         </div>
     )
 }
@@ -107,7 +109,7 @@ function CategoryBtn({ title, Icon, isSelected, onClick }: CategoryBtnProp) {
     return (
         <button onClick={onClick}>
             <div className={thisCategoryIsSelected(isSelected)}>
-                <Icon size={ isSelected ? 40 : 32} color="#fefefe" />
+                <Icon size={isSelected ? 40 : 32} color="#fefefe" />
             </div>
 
             <span className="text-sm font-semibold text-rosaEscuro">{title}</span>

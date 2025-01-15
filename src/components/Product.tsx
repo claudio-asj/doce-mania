@@ -1,4 +1,5 @@
 import { Heart } from "lucide-react";
+import { addProduct } from "../utils/addProduct";
 
 interface ProductProp {
     name: string;
@@ -6,7 +7,10 @@ interface ProductProp {
     price: string;
     description: string;
 }
-export function Product({name, img,price, description}:ProductProp) {
+export function Product({ name, img, price, description }: ProductProp) {
+    const handleClick = () => {
+        addProduct({ name, price, img });
+    };
     return (
         <div
             className="relative cursor-pointer border-slate-50 border-2 rounded-lg shadow-lg overflow-hidden min-h-52 transform transition-transform duration-300 hover:scale-110"
@@ -28,7 +32,7 @@ export function Product({name, img,price, description}:ProductProp) {
                     {description}
                 </p>
             </div>
-            <button className="absolute top-3 right-2 rounded-full bg-slate-50/55 hover:bg-red-200/95 p-1 transform transition-transform duration-300 hover:scale-105">
+            <button onClick={handleClick} className="absolute top-3 right-2 rounded-full bg-slate-50/55 hover:bg-red-200/95 p-1 transform transition-transform duration-300 hover:scale-105">
                 <Heart size={18} color="#fe0000" />
             </button>
         </div>
