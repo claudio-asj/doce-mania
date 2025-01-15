@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.bgmain {
+    animation: moveToCenter 3s ease-in-out forwards; /* Animação de 3s */
+}
+
+@keyframes moveToCenter {
+    from {
+      background-position: top center; /* Posição inicial */
+    }
+    to {
+      background-position: center center; /* Posição final */
+    }
+  }

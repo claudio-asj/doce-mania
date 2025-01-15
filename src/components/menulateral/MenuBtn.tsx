@@ -1,6 +1,7 @@
 import { ClipboardList, FacebookIcon, Heart, Instagram, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { getFavorites } from "../../utils/getFavorites";
+import { clearFavorites } from "../../utils/clearFavorites";
 
 
 interface Product {
@@ -24,12 +25,13 @@ export function MenuBtn() {
 
     const closeDialog = () => {
         dialogRef.current?.close();
+        window.location.reload();
     };
 
 
     return (
         <>
-            <button onClick={openDialog} className="fixed top-3 right-4 p-2 bg-rosaClaro/35 hover:bg-rosaClaro rounded-lg h-fit w-fit">
+            <button onClick={openDialog} className="fixed z-50 top-3 right-4 p-2 bg-rosaClaro/35 hover:bg-rosaClaro rounded-lg h-fit w-fit">
                 <ClipboardList className="h-6 w-6 text-white" />
             </button>
 
@@ -42,28 +44,35 @@ export function MenuBtn() {
                 </div>
 
                 <section className="p-4 pb-12">
-                    <div className="mt-4 mb-2 flex items-center justify-center gap-2 font-semibold text-lg text-rosaEscuro"> <Heart className="h-4 w-4" /> Favoritos</div>
-                    <ul className="space-y-4">
-                        {
-                            favorites.map((product, index) => (
-                                <li key={index} className="flex items-center gap-2 border-b-2 border-slate-200 pb-3">
-                                    <img
-                                        src={product.img}
-                                        alt={product.name}
-                                        className="h-12 min-w-12 shadow rounded"
-                                    />
-                                    <div className="w-full">{product.name}</div>
-                                    {/* <div className="w-14">x{product.amount} </div> */}
-                                    <div className="w-32 text-right">{product.price}</div>
-                                </li>
-                            ))
-                        }
-                    </ul>
+                    <div className={`${(localStorage.getItem('favorites') ? 'block' : 'hidden')}`}>
+                        <div className="mt-4 mb-2 flex items-center justify-center gap-2 font-semibold text-lg text-rosaEscuro"> <Heart className="h-4 w-4" /> Favoritos</div>
+                        <ul className="space-y-4">
+                            {
+                                favorites.map((product, index) => (
+                                    <li key={index} className="flex items-center gap-2 border-b-2 border-slate-200 pb-3">
+                                        <img
+                                            src={product.img}
+                                            alt={product.name}
+                                            className="h-12 min-w-12 shadow rounded"
+                                        />
+                                        <div className="w-full">{product.name}</div>
+                                        {/* <div className="w-14">x{product.amount} </div> */}
+                                        <div className="w-32 text-right">{product.price}</div>
+                                    </li>
+                                ))
+                            }
+                        </ul>
 
-                    <div className="text-center text-sm mt-8 mx-4 font-thin italic leading-4 text-black/60">
-                        Esses são seus favoritos! Você pode chamar o garçom a qualquer momento para realizar seu pedido.
+                        <div className="text-center text-sm mt-8 mx-4 font-thin italic leading-4 text-black/60">
+                            Esses são seus favoritos! Você pode chamar o garçom a qualquer momento para realizar seu pedido.
+                        </div>
+
+                        <button onClick={() => {
+                            clearFavorites()
+                            setFavorites(getFavorites())
+                        }} className="bg-rosaEscuro/15 w-full my-4 p-2 rounded text-rosaEscuro hover:bg-rosaEscuro hover:text-white text-sm">Limpar</button>
+
                     </div>
-
                     <div className="flex items-center justify-center gap-4 mt-12">
                         <a className="bg-rosaClaro/55 hover:bg-rosaClaro p-2 rounded shadow" href="#">
                             <Instagram className="h-6 w-6 text-rosaEscuro" />
@@ -75,6 +84,7 @@ export function MenuBtn() {
                             <Instagram className="h-6 w-6 text-rosaEscuro" />
                         </a>
                     </div>
+
                 </section>
             </dialog>
         </>
