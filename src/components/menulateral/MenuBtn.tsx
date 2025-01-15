@@ -1,5 +1,5 @@
 import { ClipboardList, Heart, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { getFavorites } from "../../utils/getFavorites";
 
 
@@ -18,17 +18,13 @@ export function MenuBtn() {
 
     const openDialog = () => {
         dialogRef.current?.showModal();
+        setFavorites(getFavorites())
+
     };
 
     const closeDialog = () => {
         dialogRef.current?.close();
     };
-
-
-
-    useEffect(() => {
-        setFavorites(getFavorites())
-    }, [])
 
 
     return (
