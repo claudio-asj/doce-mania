@@ -1,94 +1,168 @@
-import { ClipboardList, FacebookIcon, Heart, Instagram, X } from "lucide-react";
-import { useRef, useState } from "react";
-import { getFavorites } from "../../utils/getFavorites";
-import { clearFavorites } from "../../utils/clearFavorites";
-
-
-interface Product {
-    name: string;
-    price: string;
-    img: string;
-    amount: number
-}
-
+import {
+  ClipboardList,
+  Trash2,
+  X,
+  MessageCircle,
+  ShoppingBasket, // Ícone para a lista vazia
+} from "lucide-react";
+import { useRef, useMemo } from "react";
+import { useFavorites } from "../../context/FavoritesContext";
 
 export function MenuBtn() {
-    const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-    const [favorites, setFavorites] = useState<Product[]>([]);
+  const { favorites, clearFavorites, removeFavorite, updateAmount } =
+    useFavorites();
 
-    const openDialog = () => {
-        dialogRef.current?.showModal();
-        setFavorites(getFavorites())
+  // 1. Transições mais suaves ao abrir/fechar o dialog
+  const openDialog = () => dialogRef.current?.showModal();
+  const closeDialog = () => dialogRef.current?.close();
 
-    };
+  // 2. Cálculo do valor total do pedido (melhora de UX)
+  // useMemo evita que o cálculo seja refeito em toda renderização
+  const totalPrice = useMemo(() => {
+    const total = favorites.reduce((acc, product) => {
+      // Converte o preço "R$ 10,50" para um número 10.50
+      const priceAsNumber = parseFloat(
+        product.price.replace("R$", "").replace(",", ".").trim()
+      );
+      return acc + priceAsNumber * product.amount;
+    }, 0);
 
-    const closeDialog = () => {
-        dialogRef.current?.close();
-        window.location.reload();
-    };
+    // Formata o número de volta para o formato de moeda brasileira
+    return total.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }, [favorites]);
 
+  const handleWhatsAppOrder = () => {
+    if (favorites.length === 0) return;
 
-    return (
-        <>
-            <button onClick={openDialog} className="fixed z-50 top-3 right-4 p-2 bg-rosaClaro/35 hover:bg-rosaClaro rounded-lg h-fit w-fit">
-                <ClipboardList className="h-6 w-6 text-white" />
-            </button>
+    const phoneNumber = "5521979317341";
+    const orderItems = favorites
+      .map(
+        (product) => `- ${product.amount}x ${product.name} (${product.price})`
+      )
+      .join("\n");
 
-            <dialog ref={dialogRef} className="mx-auto w-full max-w-sm rounded-lg shadow-lg">
-                <div className="flex justify-between items-center bg-rosaClaro p-4">
-                    <span className="text-lg font-bold text-marrom">Doce Mania</span>
-                    <button onClick={closeDialog} className="text-white hover:text-rosaEscuro" >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
+    // Adiciona o valor total à mensagem
+    const message = `Olá! Gostaria de fazer o seguinte pedido:\n\n${orderItems}\n\n*Total: ${totalPrice}*\n\nObrigado!`;
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
-                <section className="p-4 pb-12">
-                    <div className={`${(localStorage.getItem('favorites') ? 'block' : 'hidden')}`}>
-                        <div className="mt-4 mb-2 flex items-center justify-center gap-2 font-semibold text-lg text-rosaEscuro"> <Heart className="h-4 w-4" /> Favoritos</div>
-                        <ul className="space-y-4">
-                            {
-                                favorites.map((product, index) => (
-                                    <li key={index} className="flex items-center gap-2 border-b-2 border-slate-200 pb-3">
-                                        <img
-                                            src={product.img}
-                                            alt={product.name}
-                                            className="h-12 min-w-12 shadow rounded"
-                                        />
-                                        <div className="w-full">{product.name}</div>
-                                        {/* <div className="w-14">x{product.amount} </div> */}
-                                        <div className="w-32 text-right">{product.price}</div>
-                                    </li>
-                                ))
-                            }
-                        </ul>
+  return (
+    <>
+      <button
+        onClick={openDialog}
+        className="fixed z-40 top-4 right-4 p-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-lg text-white transition-colors"
+      >
+        <ClipboardList className="h-6 w-6" />
+      </button>
 
-                        <div className="text-center text-sm mt-8 mx-4 font-thin italic leading-4 text-black/60">
-                            Esses são seus favoritos! Você pode chamar o garçom a qualquer momento para realizar seu pedido.
-                        </div>
+      {/* 3. Estilização do Dialog e Backdrop para uma entrada suave */}
+      <dialog
+        ref={dialogRef}
+        className="
+          p-0 w-full max-w-md rounded-2xl shadow-xl bg-slate-50
+          backdrop:bg-black/40 backdrop:backdrop-blur-sm
+          open:opacity-100 open:scale-100 transition-all duration-300
+          opacity-0 scale-95
+        "
+      >
+        {/* Cabeçalho Fixo */}
+        <header className="sticky top-0 flex justify-between items-center bg-rosaClaro p-4 border-b border-rosaClaro/20">
+          <span className="text-lg font-bold text-marrom">Seu Pedido</span>
+          <button
+            onClick={closeDialog}
+            className="p-1 rounded-full text-white hover:bg-black/10 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </header>
 
-                        <button onClick={() => {
-                            clearFavorites()
-                            setFavorites(getFavorites())
-                        }} className="bg-rosaEscuro/15 w-full my-4 p-2 rounded text-rosaEscuro hover:bg-rosaEscuro hover:text-white text-sm">Limpar</button>
-
+        {/* 4. Tratamento de "Estado Vazio" com uma mensagem clara */}
+        {favorites.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 p-10 text-center">
+            <ShoppingBasket size={48} className="text-slate-300" />
+            <h3 className="font-bold text-slate-600">Sua lista está vazia</h3>
+            <p className="text-sm text-slate-500">
+              Adicione seus doces favoritos para vê-los aqui!
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* 5. Conteúdo com scroll e melhor espaçamento */}
+            <main className="p-5 max-h-[50vh] overflow-y-auto">
+              <ul className="space-y-5">
+                {favorites.map((product) => (
+                  <li
+                    key={product.name}
+                    className="flex items-center gap-4 text-sm"
+                  >
+                    <img
+                      src={product.img}
+                      alt={product.name}
+                      className="h-16 w-16 rounded-lg object-cover"
+                    />
+                    <div className="flex-grow">
+                      <p className="font-semibold text-slate-800">
+                        {product.name}
+                      </p>
+                      <p className="text-slate-500">{product.price}</p>
                     </div>
-                    <div className="flex items-center justify-center gap-4 mt-12">
-                        <a className="bg-rosaClaro/55 hover:bg-rosaClaro p-2 rounded shadow" href="#">
-                            <Instagram className="h-6 w-6 text-rosaEscuro" />
-                        </a>
-                        <a className="bg-rosaClaro/55 hover:bg-rosaClaro p-2 rounded shadow" href="#">
-                            <FacebookIcon className="h-6 w-6 text-rosaEscuro" />
-                        </a>
-                        <a className="bg-rosaClaro/55 hover:bg-rosaClaro p-2 rounded shadow" href="#">
-                            <Instagram className="h-6 w-6 text-rosaEscuro" />
-                        </a>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={product.amount}
+                        onChange={(e) =>
+                          updateAmount(
+                            product.name,
+                            parseInt(e.target.value, 10) || 1
+                          )
+                        }
+                        className="w-14 text-center border rounded-md p-1 bg-white"
+                        min="1"
+                      />
+                      <button
+                        onClick={() => removeFavorite(product.name)}
+                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
+                  </li>
+                ))}
+              </ul>
+            </main>
 
-                </section>
-            </dialog>
-        </>
-
-
-    )
+            {/* 6. Rodapé fixo com total e botões de ação com hierarquia visual */}
+            <footer className="sticky bottom-0 bg-white/80 backdrop-blur-sm p-5 border-t border-slate-200 space-y-4">
+              <div className="flex justify-between items-center font-semibold text-slate-800">
+                <span>Total</span>
+                <span className="text-xl">{totalPrice}</span>
+              </div>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={handleWhatsAppOrder}
+                  className="flex items-center justify-center gap-2 w-full p-3 rounded-lg text-white bg-green-500 hover:bg-green-600 font-bold transition-colors shadow-lg shadow-green-500/20"
+                >
+                  <MessageCircle size={20} />
+                  Enviar Pedido via WhatsApp
+                </button>
+                <button
+                  onClick={clearFavorites}
+                  className="w-full p-2 rounded-lg text-sm text-red-500 hover:bg-red-100 font-medium transition-colors"
+                >
+                  Limpar lista
+                </button>
+              </div>
+            </footer>
+          </>
+        )}
+      </dialog>
+    </>
+  );
 }
